@@ -2,6 +2,7 @@
 using LibraryApi.Models;
 using LibraryApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryApi.Controllers;
 
@@ -17,6 +18,7 @@ public class AuthorsController : ControllerBase
     }
 
     // GET: api/authors
+    [Authorize(Policy = "Authors.View")]
     [HttpGet]
     public async Task<IActionResult> GetAllAuthors()
     {
@@ -25,6 +27,7 @@ public class AuthorsController : ControllerBase
     }
 
     // GET: api/authors/1
+    [Authorize(Policy = "Authors.View")]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetAuthorById(int id)
     {
@@ -37,6 +40,7 @@ public class AuthorsController : ControllerBase
     }
 
     // POST: api/authors
+    [Authorize(Policy = "Authors.Create")]
     [HttpPost]
     public async Task<IActionResult> AddAuthor(Author author)
     {
@@ -50,6 +54,7 @@ public class AuthorsController : ControllerBase
     }
 
     // PUT: api/authors/1
+    [Authorize(Policy = "Authors.Edit")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateAuthor(
         int id, Author updatedAuthor)
@@ -64,6 +69,7 @@ public class AuthorsController : ControllerBase
     }
 
     // DELETE: api/authors/1
+    [Authorize(Policy = "Authors.Delete")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteAuthor(int id)
     {

@@ -1,6 +1,7 @@
 using LibraryApi.DTOs.Loans;
 using LibraryApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryApi.Controllers;
 
@@ -16,6 +17,7 @@ public class LoansController : ControllerBase
     }
 
     // GET: api/loans
+    [Authorize(Policy = "Loans.View")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -24,6 +26,7 @@ public class LoansController : ControllerBase
     }
 
     // GET: api/loans/5
+    [Authorize(Policy = "Loans.View")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -36,6 +39,7 @@ public class LoansController : ControllerBase
     }
 
     // POST: api/loans
+    [Authorize(Policy = "Loans.Create")]
     [HttpPost]
     public async Task<IActionResult> BorrowBook(CreateLoanDto dto)
     {
@@ -56,6 +60,7 @@ public class LoansController : ControllerBase
     }
 
     // PUT: api/loans/5/return
+    [Authorize(Policy = "Loans.Return")]
     [HttpPut("{id}/return")]
     public async Task<IActionResult> ReturnBook(int id)
     {

@@ -102,4 +102,24 @@ public class LoanService : ILoanService
             ReturnDate = loan.ReturnDate
         };
     }
+    private static decimal CalculatePenalty(int lateDays)
+    {
+        decimal amount = 0;
+
+        if (lateDays <= 0)
+            return 0;
+
+        amount += Math.Min(lateDays, 3) * 0.5m;
+
+        if (lateDays > 3)
+            amount += Math.Min(lateDays - 3, 4) * 1m;
+
+        if (lateDays > 7)
+            amount += Math.Min(lateDays - 7, 7) * 1.5m;
+
+        if (lateDays > 14)
+            amount += (lateDays - 14) * 2m;
+
+        return amount;
+    }
 }

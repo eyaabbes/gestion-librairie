@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApi.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
+
 [ApiController]
 [Route("api/[controller]")]
 public class StudentsController : ControllerBase
@@ -17,6 +19,7 @@ public class StudentsController : ControllerBase
     }
 
     // GET: api/students
+    [Authorize(Policy = "Students.View")]
     [HttpGet]
     public async Task<IActionResult> GetAllStudents()
     {
@@ -25,6 +28,7 @@ public class StudentsController : ControllerBase
     }
 
     // GET: api/students/1
+    [Authorize(Policy = "Students.View")]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetStudentById(int id)
     {
@@ -37,6 +41,7 @@ public class StudentsController : ControllerBase
     }
 
     // POST: api/students
+    [Authorize(Policy = "Students.Create")]
     [HttpPost]
     public async Task<IActionResult> AddStudent(Student student)
     {
@@ -57,6 +62,7 @@ public class StudentsController : ControllerBase
     }
 
     // PUT: api/students/1
+    [Authorize(Policy = "Students.Edit")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateStudent(
         int id, Student updatedStudent)
@@ -78,6 +84,7 @@ public class StudentsController : ControllerBase
     }
 
     // DELETE: api/students/1
+    [Authorize(Policy = "Students.Delete")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteStudent(int id)
     {

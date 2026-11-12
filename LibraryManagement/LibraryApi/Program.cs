@@ -10,6 +10,8 @@ using LibraryApi.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using LibraryApi.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,6 +92,80 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddScoped<ILoanRepository, LoanRepository>();
 builder.Services.AddScoped<ILoanService, LoanService>();
+
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+
+builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Books.View",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Books.View")));
+
+    options.AddPolicy("Books.Create",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Books.Create")));
+
+    options.AddPolicy("Books.Edit",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Books.Edit")));
+
+    options.AddPolicy("Books.Delete",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Books.Delete")));
+
+    options.AddPolicy("Students.View",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Students.View")));
+
+    options.AddPolicy("Students.Create", policy => policy.Requirements.Add(new PermissionRequirement("Students.Create")));
+    options.AddPolicy("Students.Edit", policy => policy.Requirements.Add(new PermissionRequirement("Students.Edit")));
+    options.AddPolicy("Students.Delete", policy => policy.Requirements.Add(new PermissionRequirement("Students.Delete")));
+
+    options.AddPolicy("Authors.View", policy => policy.Requirements.Add(new PermissionRequirement("Authors.View")));
+    options.AddPolicy("Authors.Create", policy => policy.Requirements.Add(new PermissionRequirement("Authors.Create")));
+    options.AddPolicy("Authors.Edit", policy => policy.Requirements.Add(new PermissionRequirement("Authors.Edit")));
+    options.AddPolicy("Authors.Delete", policy => policy.Requirements.Add(new PermissionRequirement("Authors.Delete")));
+
+    options.AddPolicy("Categories.View", policy => policy.Requirements.Add(new PermissionRequirement("Categories.View")));
+    options.AddPolicy("Categories.Create", policy => policy.Requirements.Add(new PermissionRequirement("Categories.Create")));
+    options.AddPolicy("Categories.Edit", policy => policy.Requirements.Add(new PermissionRequirement("Categories.Edit")));
+    options.AddPolicy("Categories.Delete", policy => policy.Requirements.Add(new PermissionRequirement("Categories.Delete")));
+
+    options.AddPolicy("Employees.Create", policy => policy.Requirements.Add(new PermissionRequirement("Employees.Create")));
+    options.AddPolicy("Employees.Edit", policy => policy.Requirements.Add(new PermissionRequirement("Employees.Edit")));
+    options.AddPolicy("Employees.Delete", policy => policy.Requirements.Add(new PermissionRequirement("Employees.Delete")));
+
+    options.AddPolicy("Loans.View",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Loans.View")));
+
+    options.AddPolicy("Loans.Create",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Loans.Create")));
+
+    options.AddPolicy("Loans.Return",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Loans.Return")));
+
+    options.AddPolicy("Employees.View",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Employees.View")));
+
+    options.AddPolicy("Reports.View",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Reports.View")));
+});
+
+builder.Services.AddScoped<
+    IAuthorizationHandler,
+    PermissionAuthorizationHandler>();
+
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

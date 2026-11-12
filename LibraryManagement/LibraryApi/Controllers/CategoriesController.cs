@@ -2,6 +2,7 @@
 using LibraryApi.Models;
 using LibraryApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryApi.Controllers;
 
@@ -17,6 +18,7 @@ public class CategoriesController : ControllerBase
     }
 
     // GET: api/categories
+    [Authorize(Policy = "Categories.View")]
     [HttpGet]
     public async Task<IActionResult> GetAllCategories()
     {
@@ -25,6 +27,7 @@ public class CategoriesController : ControllerBase
     }
 
     // GET: api/categories/1
+    [Authorize(Policy = "Categories.View")]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCategoryById(int id)
     {
@@ -37,6 +40,7 @@ public class CategoriesController : ControllerBase
     }
 
     // POST: api/categories
+    [Authorize(Policy = "Categories.Create")]
     [HttpPost]
     public async Task<IActionResult> AddCategory(Category category)
     {
@@ -50,6 +54,7 @@ public class CategoriesController : ControllerBase
     }
 
     // PUT: api/categories/1
+    [Authorize(Policy = "Categories.Edit")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateCategory(
         int id, Category updatedCategory)
@@ -64,6 +69,7 @@ public class CategoriesController : ControllerBase
     }
 
     // DELETE: api/categories/1
+    [Authorize(Policy = "Categories.Delete")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {

@@ -27,6 +27,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
+    public DbSet<Penalty> Penalties { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
+    public DbSet<SubscriptionPayment> SubscriptionPayments { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         // Configuration des tables Identity
@@ -54,5 +58,45 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .HasOne(up => up.Permission)
             .WithMany(p => p.UserPermissions)
             .HasForeignKey(up => up.PermissionId);
+
+        builder.Entity<Penalty>()
+            .HasOne(p => p.Loan)
+            .WithMany()
+            .HasForeignKey(p => p.LoanId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Subscription>()
+            .HasOne(s => s.Student)
+            .WithMany()
+            .HasForeignKey(s => s.StudentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Subscription>()
+            .HasOne(s => s.SubscriptionPlan)
+            .WithMany(p => p.Subscriptions)
+            .HasForeignKey(s => s.SubscriptionPlanId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<SubscriptionPlan>()
+            .HasIndex(p => p.Name)
+            .IsUnique();
+
+        builder.Entity<SubscriptionPlan>()
+            .Property(p => p.Price)
+            .HasPrecision(10, 2);
+
+        builder.Entity<Penalty>()
+            .Property(p => p.Amount)
+            .HasPrecision(10, 2);
+
+        builder.Entity<SubscriptionPayment>()
+            .HasOne(p => p.Subscription)
+            .WithMany()
+            .HasForeignKey(p => p.SubscriptionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<SubscriptionPayment>()
+            .Property(p => p.Amount)
+            .HasPrecision(10, 2);
     }
 }

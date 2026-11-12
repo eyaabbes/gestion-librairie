@@ -3,6 +3,7 @@ using LibraryApi.DTOs;
 using LibraryApi.Models;
 using LibraryApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryApi.Controllers;
 
@@ -18,6 +19,7 @@ public class EmployeesController : ControllerBase
     }
 
     // GET: api/employees
+    [Authorize(Policy = "Employees.View")]
     [HttpGet]
     public async Task<IActionResult> GetAllEmployees()
     {
@@ -26,6 +28,7 @@ public class EmployeesController : ControllerBase
     }
 
     // GET: api/employees/1
+    [Authorize(Policy = "Employees.View")]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetEmployeeById(int id)
     {
@@ -38,6 +41,7 @@ public class EmployeesController : ControllerBase
     }
 
     // POST: api/employees
+    [Authorize(Policy = "Employees.Create")]
     [HttpPost]
     public async Task<IActionResult> AddEmployee(Employee employee)
     {
@@ -58,6 +62,7 @@ public class EmployeesController : ControllerBase
     }
 
     // PUT: api/employees/1
+    [Authorize(Policy = "Employees.Edit")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateEmployee(
         int id, Employee updatedEmployee)
@@ -79,6 +84,7 @@ public class EmployeesController : ControllerBase
     }
 
     // DELETE: api/employees/1
+    [Authorize(Policy = "Employees.Delete")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteEmployee(int id)
     {
@@ -98,6 +104,7 @@ public class EmployeesController : ControllerBase
     }
 
     // POST: api/employees/1/account
+    [Authorize(Policy = "Employees.Create")]
     [HttpPost("{employeeId:int}/account")]
     public async Task<IActionResult> CreateEmployeeAccount(
         int employeeId,
