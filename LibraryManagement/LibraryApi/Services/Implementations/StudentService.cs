@@ -34,6 +34,7 @@ public class StudentService : IStudentService
                 "Cette adresse email est déjà utilisée."
             );
 
+        student.Loans = new List<Loan>();
         await _studentRepository.AddAsync(student);
     }
 

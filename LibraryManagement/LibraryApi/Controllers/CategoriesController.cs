@@ -23,7 +23,7 @@ public class CategoriesController : ControllerBase
     public async Task<IActionResult> GetAllCategories()
     {
         var categories = await _categoryService.GetAllCategoriesAsync();
-        return Ok(categories);
+        return Ok(categories.Select(ToResponse));
     }
 
     // GET: api/categories/1
@@ -36,7 +36,7 @@ public class CategoriesController : ControllerBase
         if (category == null)
             return NotFound("Category not found.");
 
-        return Ok(category);
+        return Ok(ToResponse(category));
     }
 
     // POST: api/categories
@@ -49,7 +49,7 @@ public class CategoriesController : ControllerBase
         return CreatedAtAction(
             nameof(GetCategoryById),
             new { id = category.Id },
-            category
+            ToResponse(category)
         );
     }
 
@@ -87,4 +87,10 @@ public class CategoriesController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    private static object ToResponse(Category category) => new
+    {
+        category.Id,
+        category.Name
+    };
 }

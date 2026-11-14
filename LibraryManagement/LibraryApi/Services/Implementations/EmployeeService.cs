@@ -41,6 +41,7 @@ public class EmployeeService : IEmployeeService
             );
 
         employee.ApplicationUserId = null;
+        employee.ApplicationUser = null;
 
         await _employeeRepository.AddAsync(employee);
     }

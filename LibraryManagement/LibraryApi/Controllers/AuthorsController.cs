@@ -1,5 +1,6 @@
 
 using LibraryApi.Models;
+using LibraryApi.DTOs.Authors;
 using LibraryApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -42,14 +43,14 @@ public class AuthorsController : ControllerBase
     // POST: api/authors
     [Authorize(Policy = "Authors.Create")]
     [HttpPost]
-    public async Task<IActionResult> AddAuthor(Author author)
+    public async Task<IActionResult> AddAuthor(AuthorInputDto author)
     {
-        await _authorService.AddAuthorAsync(author);
+        var created = await _authorService.AddAuthorAsync(author);
 
         return CreatedAtAction(
             nameof(GetAuthorById),
-            new { id = author.Id },
-            author
+            new { id = created.Id },
+            created
         );
     }
 
@@ -57,7 +58,7 @@ public class AuthorsController : ControllerBase
     [Authorize(Policy = "Authors.Edit")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateAuthor(
-        int id, Author updatedAuthor)
+        int id, AuthorInputDto updatedAuthor)
     {
         var result = await _authorService.UpdateAuthorAsync(
             id, updatedAuthor);

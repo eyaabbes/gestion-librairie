@@ -92,6 +92,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddScoped<ILoanRepository, LoanRepository>();
 builder.Services.AddScoped<ILoanService, LoanService>();
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
@@ -153,6 +154,10 @@ builder.Services.AddAuthorization(options =>
         policy => policy.Requirements.Add(
             new PermissionRequirement("Loans.Return")));
 
+    options.AddPolicy("Subscriptions.View",
+        policy => policy.Requirements.Add(
+            new PermissionRequirement("Subscriptions.View")));
+
     options.AddPolicy("Employees.View",
         policy => policy.Requirements.Add(
             new PermissionRequirement("Employees.View")));
@@ -167,6 +172,10 @@ builder.Services.AddScoped<
     PermissionAuthorizationHandler>();
 
 
+
+builder.Services.AddHttpClient<
+    ISupabaseStorageService,
+    SupabaseStorageService>();
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
@@ -178,6 +187,18 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<ApplicationDbContext>();
 
     await PermissionSeeder.SeedAsync(context);
+}
+
+if (args.Contains("--seed-demo-data", StringComparer.OrdinalIgnoreCase))
+{
+    if (!app.Environment.IsDevelopment())
+        throw new InvalidOperationException("Le jeu de données de démonstration ne peut être créé qu'en environnement Development.");
+
+    using var scope = app.Services.CreateScope();
+    var summary = await DemoDataSeeder.SeedAsync(scope.ServiceProvider);
+    Console.WriteLine(
+        $"Données vérifiées dans SQL Server : {summary.Categories} catégories, {summary.Authors} auteurs, {summary.Books} livres, {summary.Students} étudiants, {summary.Employees} employés ({summary.EmployeeAccounts} comptes Identity), {summary.EmployeePermissions} attributions de permissions, {summary.Subscriptions} abonnements ({summary.ActiveSubscriptions} actifs), {summary.SubscriptionPayments} paiements, {summary.Loans} emprunts ({summary.OpenLoans} en cours, {summary.OverdueLoans} en retard, {summary.ReturnedLoans} retournés), {summary.DemoPenalties} pénalités ({summary.PaidPenalties} payées, {summary.UnpaidPenalties} impayées).");
+    return;
 }
 
 // Configure the HTTP request pipeline.

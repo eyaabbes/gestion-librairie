@@ -26,6 +26,7 @@ public class CategoryService : ICategoryService
 
     public async Task AddCategoryAsync(Category category)
     {
+        category.Books = new List<Book>();
         await _categoryRepository.AddAsync(category);
     }
 

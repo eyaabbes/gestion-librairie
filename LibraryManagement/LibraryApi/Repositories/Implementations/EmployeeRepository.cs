@@ -18,14 +18,12 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<List<Employee>> GetAllAsync()
     {
         return await _context.Employees
-            .Include(e => e.ApplicationUser)
             .ToListAsync();
     }
 
     public async Task<Employee?> GetByIdAsync(int id)
     {
         return await _context.Employees
-            .Include(e => e.ApplicationUser)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 

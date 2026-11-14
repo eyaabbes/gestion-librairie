@@ -88,6 +88,7 @@ public class AuthController : ControllerBase
             message = "Connexion réussie.",
             token = tokenString,
             expiration = token.ValidTo,
+            userId = user.Id,
             email = user.Email,
             fullName = user.FullName,
             roles = roles

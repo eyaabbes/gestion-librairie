@@ -98,5 +98,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.Entity<SubscriptionPayment>()
             .Property(p => p.Amount)
             .HasPrecision(10, 2);
+
+        builder.Entity<Book>()
+            .Property(book => book.Price)
+            .HasPrecision(10, 2);
     }
 }

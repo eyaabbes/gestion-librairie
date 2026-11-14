@@ -10,12 +10,12 @@ public class UserPermissionRepository : IUserPermissionRepository
 
     public UserPermissionRepository(ApplicationDbContext context) => _context = context;
 
-    public Task<List<UserPermission>> GetByUserIdAsync(string userId) =>
+    public Task<List<string>> GetPermissionNamesByUserIdAsync(string userId) =>
         _context.UserPermissions
             .AsNoTracking()
-            .Include(up => up.Permission)
             .Where(up => up.UserId == userId)
-            .OrderBy(up => up.Permission!.Name)
+            .Select(up => up.Permission!.Name)
+            .OrderBy(name => name)
             .ToListAsync();
 
     public Task<UserPermission?> GetAsync(string userId, int permissionId) =>

@@ -1,5 +1,6 @@
 
 using LibraryApi.Models;
+using LibraryApi.DTOs.Books;
 using LibraryApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,7 +43,7 @@ public class BooksController : ControllerBase
     // POST: api/books
     [Authorize(Policy = "Books.Create")]
     [HttpPost]
-    public async Task<IActionResult> AddBook(Book book)
+    public async Task<IActionResult> AddBook(BookInputDto book)
     {
         try
         {
@@ -63,7 +64,7 @@ public class BooksController : ControllerBase
     // PUT: api/books/1
     [Authorize(Policy = "Books.Edit")]
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateBook(int id, Book updatedBook)
+    public async Task<IActionResult> UpdateBook(int id, BookInputDto updatedBook)
     {
         try
         {
@@ -73,6 +74,29 @@ public class BooksController : ControllerBase
                 return NotFound("Book not found.");
 
             return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // POST: api/books/1/image (multipart/form-data, field: image)
+    [Authorize(Policy = "Books.Edit")]
+    [HttpPost("{id:int}/image")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadBookImage(
+        int id,
+        [FromForm(Name = "image")] IFormFile image)
+    {
+        try
+        {
+            var book = await _bookService.UploadBookImageAsync(id, image);
+
+            if (book == null)
+                return NotFound("Book not found.");
+
+            return Ok(book);
         }
         catch (InvalidOperationException ex)
         {

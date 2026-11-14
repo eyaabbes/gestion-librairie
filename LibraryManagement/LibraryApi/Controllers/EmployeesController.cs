@@ -24,7 +24,7 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> GetAllEmployees()
     {
         var employees = await _employeeService.GetAllEmployeesAsync();
-        return Ok(employees);
+        return Ok(employees.Select(ToResponse));
     }
 
     // GET: api/employees/1
@@ -37,7 +37,7 @@ public class EmployeesController : ControllerBase
         if (employee == null)
             return NotFound("Employee not found.");
 
-        return Ok(employee);
+        return Ok(ToResponse(employee));
     }
 
     // POST: api/employees
@@ -52,7 +52,7 @@ public class EmployeesController : ControllerBase
             return CreatedAtAction(
                 nameof(GetEmployeeById),
                 new { id = employee.Id },
-                employee
+                ToResponse(employee)
             );
         }
         catch (InvalidOperationException ex)
@@ -132,4 +132,14 @@ public class EmployeesController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    private static object ToResponse(Employee employee) => new
+    {
+        employee.Id,
+        employee.FullName,
+        employee.Email,
+        employee.JobTitle,
+        employee.IsActive,
+        employee.ApplicationUserId
+    };
 }

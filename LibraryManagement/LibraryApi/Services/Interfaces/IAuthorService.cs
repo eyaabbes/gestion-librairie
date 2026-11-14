@@ -1,17 +1,18 @@
 
 using LibraryApi.Models;
+using LibraryApi.DTOs.Authors;
 
 namespace LibraryApi.Services.Interfaces;
 
 public interface IAuthorService
 {
-    Task<List<Author>> GetAllAuthorsAsync();
+    Task<List<AuthorDto>> GetAllAuthorsAsync();
 
-    Task<Author?> GetAuthorByIdAsync(int id);
+    Task<AuthorDto?> GetAuthorByIdAsync(int id);
 
-    Task AddAuthorAsync(Author author);
+    Task<AuthorDto> AddAuthorAsync(AuthorInputDto author);
 
-    Task<bool> UpdateAuthorAsync(int id, Author updatedAuthor);
+    Task<bool> UpdateAuthorAsync(int id, AuthorInputDto updatedAuthor);
 
     Task<bool> DeleteAuthorAsync(int id);
 }

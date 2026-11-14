@@ -61,11 +61,11 @@ public class PermissionService : IPermissionService
         return true;
     }
 
-    public async Task<List<UserPermission>> GetUserPermissionsAsync(string userId)
+    public async Task<List<string>> GetUserPermissionNamesAsync(string userId)
     {
         if (await _userManager.FindByIdAsync(userId) is null)
             throw new KeyNotFoundException("Utilisateur introuvable.");
-        return await _userPermissionRepository.GetByUserIdAsync(userId);
+        return await _userPermissionRepository.GetPermissionNamesByUserIdAsync(userId);
     }
 
     public async Task<bool> GrantAsync(string userId, int permissionId)

@@ -63,6 +63,11 @@ public static class PermissionSeeder
             },
             new Permission
             {
+                Name = "Subscriptions.View",
+                Description = "Consulter les abonnements"
+            },
+            new Permission
+            {
                 Name = "Employees.View",
                 Description = "Consulter les employés"
             },

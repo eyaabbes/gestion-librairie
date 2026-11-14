@@ -1,5 +1,6 @@
 
 using LibraryApi.Models;
+using LibraryApi.DTOs.Authors;
 using LibraryApi.Repositories.Interfaces;
 using LibraryApi.Services.Interfaces;
 
@@ -14,23 +15,27 @@ public class AuthorService : IAuthorService
         _authorRepository = authorRepository;
     }
 
-    public async Task<List<Author>> GetAllAuthorsAsync()
+    public async Task<List<AuthorDto>> GetAllAuthorsAsync()
     {
-        return await _authorRepository.GetAllAsync();
+        var authors = await _authorRepository.GetAllAsync();
+        return authors.Select(MapToDto).ToList();
     }
 
-    public async Task<Author?> GetAuthorByIdAsync(int id)
+    public async Task<AuthorDto?> GetAuthorByIdAsync(int id)
     {
-        return await _authorRepository.GetByIdAsync(id);
+        var author = await _authorRepository.GetByIdAsync(id);
+        return author == null ? null : MapToDto(author);
     }
 
-    public async Task AddAuthorAsync(Author author)
+    public async Task<AuthorDto> AddAuthorAsync(AuthorInputDto input)
     {
+        var author = new Author { FirstName = input.FirstName, LastName = input.LastName };
         await _authorRepository.AddAsync(author);
+        return MapToDto(author);
     }
 
     public async Task<bool> UpdateAuthorAsync(
-        int id, Author updatedAuthor)
+        int id, AuthorInputDto updatedAuthor)
     {
         var author = await _authorRepository.GetByIdAsync(id);
 
@@ -63,4 +68,11 @@ public class AuthorService : IAuthorService
 
         return true;
     }
+
+    private static AuthorDto MapToDto(Author author) => new()
+    {
+        Id = author.Id,
+        FirstName = author.FirstName,
+        LastName = author.LastName
+    };
 }

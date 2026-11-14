@@ -24,7 +24,7 @@ public class StudentsController : ControllerBase
     public async Task<IActionResult> GetAllStudents()
     {
         var students = await _studentService.GetAllStudentsAsync();
-        return Ok(students);
+        return Ok(students.Select(ToResponse));
     }
 
     // GET: api/students/1
@@ -37,7 +37,7 @@ public class StudentsController : ControllerBase
         if (student == null)
             return NotFound("Student not found.");
 
-        return Ok(student);
+        return Ok(ToResponse(student));
     }
 
     // POST: api/students
@@ -52,7 +52,7 @@ public class StudentsController : ControllerBase
             return CreatedAtAction(
                 nameof(GetStudentById),
                 new { id = student.Id },
-                student
+                ToResponse(student)
             );
         }
         catch (InvalidOperationException ex)
@@ -102,4 +102,11 @@ public class StudentsController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    private static object ToResponse(Student student) => new
+    {
+        student.Id,
+        student.FullName,
+        student.Email
+    };
 }
